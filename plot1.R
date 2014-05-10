@@ -1,0 +1,8 @@
+require(data.table)
+DT<- fread(input="household_power_consumption.txt",sep= ";",header= TRUE,na.strings="?",select=c(1,3),colClasses = "?")
+DT$Date<- as.Date(DT$Date,"%d/%m/%Y")
+Q<- subset(DT,  DT$Date =="2007-02-01" | DT$Date =="2007-02-02")
+Q$Global_active_power <- sapply(Q$Global_active_power,as.numeric)
+hist(Q$Global_active_power,col="red",breaks=12,main="Global Active Power",xlab="Global Active Power(kilowatts)")
+dev.copy(png,file="plot1.png")
+dev.off()
