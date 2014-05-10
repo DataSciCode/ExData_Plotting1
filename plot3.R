@@ -1,0 +1,17 @@
+require(data.table)
+DT<- fread(input="household_power_consumption.txt",sep= ";",header= TRUE,na.strings="?",select=c(1,2,7,8,9),colClasses = "?")
+DT$Date<- as.Date(DT$Date,"%d/%m/%Y")
+
+Q<- subset(DT,  DT$Date =="2007-02-01" | DT$Date =="2007-02-02")
+Q$DateTime<-as.POSIXct(paste(Q$Date,Q$Time), format="%Y-%m-%d %H:%M:%S")
+
+Q$Sub_metering_1 <- sapply(Q$Sub_metering_1,as.numeric)
+Q$Sub_metering_2 <- sapply(Q$Sub_metering_2,as.numeric)
+Q$Sub_metering_3 <- sapply(Q$Sub_metering_3,as.numeric)
+plot_colors <- c("black","red","blue")
+plot(y = Q$Sub_metering_1,x=Q$DateTime, col = plot_colors[1], type= "l" ,ylab="Energy sub metering",xlab ="")
+lines(y = Q$Sub_metering_2,x=Q$DateTime, col = plot_colors[2])
+lines(y = Q$Sub_metering_3,x=Q$DateTime, col = plot_colors[3])
+legend("topright",c("Sub_metering_1","Sub_metering_2","Sub_metering_3"), cex = 0.8, col=plot_colors,lty=1)
+dev.print(png,file="plot3.png",width=480,height=480)
+dev.off()
